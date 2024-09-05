@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./styles/App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import PosterSelector from "./components/PosterSelector";
+import PosterGallery from "./components/PosterGallery";
+import UploadDiary from "./components/UploadDiary";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<UploadDiary />} />
+          <Route path="/PosterSelector" element={<PosterSelector />} />
+          <Route
+            path="/posters/:movieName/:movieYear"
+            element={<PosterGallery />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
