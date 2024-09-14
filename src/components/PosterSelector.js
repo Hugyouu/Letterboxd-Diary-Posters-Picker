@@ -16,6 +16,7 @@ import {
 import Pagination from "@mui/material/Pagination";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import queryString from "query-string";
+import pulpGif from "../static/images/pulp.gif";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,10 +26,14 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     borderRadius: theme.shape.borderRadius,
     backgroundColor: "#1c1f23",
+    color: "white",
   },
   title: {
-    color: "white",
     marginBottom: theme.spacing(3),
+  },
+  username: {
+    color: "#00A346",
+    marginBottom: theme.spacing(2),
   },
   list: {
     maxHeight: "800px",
@@ -94,6 +99,44 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     color: "white",
   },
+  noMoviesContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "400px",
+  },
+  gifContainer: {
+    display: "flex",
+    justifyContent: "center",
+    position: "relative",
+    width: "200px",
+    height: "200px",
+    marginBottom: theme.spacing(2),
+  },
+  circleBackground: {
+    position: "absolute",
+    width: "120%",
+    height: "120%",
+    borderRadius: "50%",
+    backgroundColor: "#ffffff",
+    clipPath: "inset(0 0 25% 0)",
+    bottom: "-28%",
+  },
+  gif: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+  },
+  backButton: {
+    marginTop: theme.spacing(2),
+    backgroundColor: "#00A346",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#008036",
+    },
+  },
 }));
 
 const paginationTheme = createTheme({
@@ -134,6 +177,7 @@ const PosterSelector = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [progress, setProgress] = useState(0);
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const moviesPerPage = 10;
@@ -143,7 +187,17 @@ const PosterSelector = () => {
     const pageNumber = parsed.page ? parseInt(parsed.page, 10) : 1;
     setPage(pageNumber);
     fetchMovies(pageNumber);
+    fetchUsername();
   }, [location.search]);
+
+  const fetchUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/username");
+      setUsername(response.data.username);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  };
 
   const fetchMovies = async (pageNumber) => {
     try {
@@ -195,6 +249,10 @@ const PosterSelector = () => {
     navigate(`?page=${value}`);
   };
 
+  const handleGoBack = () => {
+    navigate("/");
+  };
+
   const formatWatchedDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -210,6 +268,11 @@ const PosterSelector = () => {
         <Typography variant="h4" gutterBottom className={classes.title}>
           Your diary
         </Typography>
+        {username && (
+          <Typography variant="h6" className={classes.username}>
+            Letterboxd User: {username}
+          </Typography>
+        )}
         {loading ? (
           <Box className={classes.progressContainer}>
             <LinearProgress variant="determinate" value={progress} />
@@ -218,93 +281,111 @@ const PosterSelector = () => {
             </Typography>
           </Box>
         ) : movies.length > 0 ? (
-          <List className={classes.list}>
-            {movies.map((movie, index) => (
-              <ListItem
-                button
-                key={index}
-                onClick={() => handleMovieClick(movie.Name, movie.Year)}
-                className={classes.listItem}
-              >
-                <Grid container alignItems="center">
-                  <Grid item>
-                    <img
-                      src={
-                        `https://image.tmdb.org/t/p/w500${movie.Poster.file_path}` ||
-                        `/api/placeholder/50/75`
-                      }
-                      alt={movie.Name}
-                      className={classes.poster}
-                    />
+          <>
+            <List className={classes.list}>
+              {movies.map((movie, index) => (
+                <ListItem
+                  button
+                  key={index}
+                  onClick={() => handleMovieClick(movie.Name, movie.Year)}
+                  className={classes.listItem}
+                >
+                  <Grid container alignItems="center">
+                    <Grid item>
+                      <img
+                        src={
+                          `https://image.tmdb.org/t/p/w500${movie.Poster.file_path}` ||
+                          `/api/placeholder/50/75`
+                        }
+                        alt={movie.Name}
+                        className={classes.poster}
+                      />
+                    </Grid>
+                    <Grid item className={classes.movieInfo}>
+                      <Typography
+                        variant="subtitle1"
+                        className={classes.movieTitle}
+                      >
+                        {movie.Name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        className={classes.movieYear}
+                      >
+                        {movie.Year}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Box className={classes.watchedDate}>
+                        {(() => {
+                          const { day, month } = formatWatchedDate(
+                            movie["Watched Date"]
+                          );
+                          return (
+                            <>
+                              <Typography
+                                variant="body2"
+                                className={classes.watchedDay}
+                              >
+                                {day}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                className={classes.watchedMonth}
+                              >
+                                {month}
+                              </Typography>
+                            </>
+                          );
+                        })()}
+                      </Box>
+                    </Grid>
                   </Grid>
-                  <Grid item className={classes.movieInfo}>
-                    <Typography
-                      variant="subtitle1"
-                      className={classes.movieTitle}
-                    >
-                      {movie.Name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      className={classes.movieYear}
-                    >
-                      {movie.Year}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Box className={classes.watchedDate}>
-                      {(() => {
-                        const { day, month } = formatWatchedDate(
-                          movie["Watched Date"]
-                        );
-                        return (
-                          <>
-                            <Typography
-                              variant="body2"
-                              className={classes.watchedDay}
-                            >
-                              {day}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              className={classes.watchedMonth}
-                            >
-                              {month}
-                            </Typography>
-                          </>
-                        );
-                      })()}
-                    </Box>
-                  </Grid>
-                </Grid>
-              </ListItem>
-            ))}
-          </List>
+                </ListItem>
+              ))}
+            </List>
+            <Box className={classes.paginationContainer}>
+              <ThemeProvider theme={paginationTheme}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                />
+              </ThemeProvider>
+            </Box>
+            <Button
+              variant="contained"
+              className={classes.refreshButton}
+              onClick={handleRefreshFiles}
+            >
+              Refresh File
+            </Button>
+          </>
         ) : (
-          <Box>
-            <Typography variant="body1" color="textSecondary" gutterBottom>
-              No movies to display. Upload a CSV file to get started.
+          <Box className={classes.noMoviesContainer}>
+            <div className={classes.gifContainer}>
+              <div className={classes.circleBackground}></div>
+              <img
+                src={pulpGif}
+                alt="Confused reaction"
+                className={classes.gif}
+              />
+            </div>
+            <Typography variant="body1" gutterBottom>
+              No movies found in your diary. Please check your Letterboxd
+              username or CSV file.
             </Typography>
+            <Button
+              variant="contained"
+              className={classes.backButton}
+              onClick={handleGoBack}
+            >
+              Go Back
+            </Button>
           </Box>
         )}
-        <Box className={classes.paginationContainer}>
-          <ThemeProvider theme={paginationTheme}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </ThemeProvider>
-        </Box>
-        <Button
-          variant="contained"
-          className={classes.refreshButton}
-          onClick={handleRefreshFiles}
-        >
-          Refresh File
-        </Button>
       </Paper>
     </Container>
   );

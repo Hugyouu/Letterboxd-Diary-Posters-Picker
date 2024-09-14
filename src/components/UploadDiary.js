@@ -6,6 +6,7 @@ import {
   Typography,
   Button,
   CircularProgress,
+  TextField,
   makeStyles,
 } from "@material-ui/core";
 import { CloudUploadOutlined } from "@material-ui/icons";
@@ -81,12 +82,31 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     padding: theme.spacing(3),
   },
+  usernameField: {
+    marginBottom: theme.spacing(3),
+    "& .MuiOutlinedInput-root": {
+      color: "#ffffff",
+      "& fieldset": {
+        borderColor: "#00A346",
+      },
+      "&:hover fieldset": {
+        borderColor: "#00A346",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#1caff2",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: "#ffffff",
+    },
+  },
 }));
 
 const UploadDiary = () => {
   const classes = useStyles();
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,21 +132,29 @@ const UploadDiary = () => {
   });
 
   const handleUpload = async () => {
-    if (file) {
+    if (username || file) {
       setUploading(true);
       try {
-        const formData = new FormData();
-        formData.append("file", file);
+        if (username) {
+          // Here you would implement the logic to fetch the diary from Letterboxd
+          // For now, we'll just simulate a successful fetch
+          console.log(`Fetching diary for user: ${username}`);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+          navigate("/PosterSelector");
+        } else if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
 
-        await axios.post("http://localhost:5000/api/upload-csv", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+          await axios.post("http://localhost:5000/api/upload-csv", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
-        navigate("/PosterSelector");
+          navigate("/PosterSelector");
+        }
       } catch (error) {
-        console.error("Error uploading file:", error);
+        console.error("Error processing diary:", error);
       } finally {
         setUploading(false);
       }
@@ -137,7 +165,22 @@ const UploadDiary = () => {
     <Container className={classes.root}>
       <div className={classes.card}>
         <Typography variant="h4" className={classes.title}>
-          Upload CSV File
+          Upload Letterboxd Diary
+        </Typography>
+        <TextField
+          className={classes.usernameField}
+          label="Letterboxd Username"
+          variant="outlined"
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter your Letterboxd username"
+        />
+        <Typography
+          variant="body2"
+          style={{ color: "#ffffff", marginBottom: "1rem" }}
+        >
+          Or upload a CSV file:
         </Typography>
         <div {...getRootProps()} className={classes.dropzone}>
           <input {...getInputProps()} />
@@ -163,41 +206,37 @@ const UploadDiary = () => {
             </>
           )}
         </div>
-        {file && (
-          <Grid
-            container
-            justify="center"
-            className={classes.progressContainer}
-          >
-            {uploading ? (
-              <CircularProgress />
-            ) : (
-              <Button
-                className={classes.submitButton}
-                variant="contained"
-                onClick={handleUpload}
-              >
-                SUBMIT
-              </Button>
-            )}
-          </Grid>
-        )}
+        <Grid container justify="center" className={classes.progressContainer}>
+          {uploading ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              className={classes.submitButton}
+              variant="contained"
+              onClick={handleUpload}
+              disabled={!username && !file}
+            >
+              SUBMIT
+            </Button>
+          )}
+        </Grid>
       </div>
       <Typography variant="body1" className={classes.overviewText}>
-        This tool allows you to easily upload your diary.csv file from
-        Letterboxd and select your favorite movie poster. Follow these simple
-        steps:
+        This tool allows you to easily import your Letterboxd diary and select
+        your favorite movie poster. Follow these simple steps:
         <br />
-        <strong>1. Upload Your CSV File:</strong> Drag and drop your diary.csv
-        file or click to select it from your device.
+        <strong>1. Enter Your Letterboxd Username:</strong> Type your Letterboxd
+        username to automatically fetch your diary.
         <br />
-        <strong>2. Automatic Processing:</strong> Once uploaded, the application
-        will automatically process the file.
+        <strong>2. Or Upload Your CSV File:</strong> If you prefer, you can
+        still upload your diary.csv file directly.
         <br />
-        <strong>3. Poster Selection:</strong> After the file is successfully
-        uploaded, you'll be redirected to the Poster Selector page, where you
-        can browse and choose your favorite movie poster based on your
-        Letterboxd diary.
+        <strong>3. Automatic Processing:</strong> Once submitted, the
+        application will process your diary.
+        <br />
+        <strong>4. Poster Selection:</strong> After processing, you'll be
+        redirected to the Poster Selector page, where you can browse and choose
+        your favorite movie poster based on your Letterboxd diary.
       </Typography>
     </Container>
   );
