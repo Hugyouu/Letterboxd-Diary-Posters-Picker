@@ -1,7 +1,6 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "private": true,
   "homepage": "https://hugyouu.github.io/Letterboxd-Diary-Posters-Picker",
   "dependencies": {
     "@emotion/react": "^11.13.3",
