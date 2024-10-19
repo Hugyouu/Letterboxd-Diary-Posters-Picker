@@ -9,3 +9,9 @@ export const deselectPoster = (movieId, posterId) => ({
   movieId,
   posterId,
 });
+
+export const removePoster = (movieId, posterId) => ({
+  type: "REMOVE_POSTER",
+  movieId,
+  posterId,
+});

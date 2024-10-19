@@ -15,10 +15,12 @@ import {
   Paper,
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
+import NavBar from "./NavBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
   },
   paper: {
     padding: theme.spacing(3),
@@ -83,6 +85,8 @@ const PosterGallery = ({ movieId }) => {
     (state) => state.posterSelections[movieId] || []
   );
 
+  console.log(movieId);
+
   useEffect(() => {
     const fetchPosters = async () => {
       try {
@@ -110,42 +114,45 @@ const PosterGallery = ({ movieId }) => {
   };
 
   return (
-    <Container className={classes.root}>
-      <Paper elevation={3} className={classes.paper}>
-        <Typography variant="h4" gutterBottom className={classes.title}>
-          Posters for {movieName} ({movieYear})
-        </Typography>
-        {loading ? (
-          <Box className={classes.loadingContainer}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {posters.map((poster, index) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                <Card
-                  className={`${classes.posterCard} ${
-                    selectedPosters.includes(poster.file_path)
-                      ? classes.selectedPoster
-                      : ""
-                  }`}
-                  onClick={() => handlePosterSelect(poster.file_path)}
-                >
-                  <CardMedia
-                    className={classes.posterImage}
-                    image={`https://image.tmdb.org/t/p/w500${poster.file_path}`}
-                    title={`${movieName} poster ${index + 1}`}
-                  />
-                  {selectedPosters.includes(poster.file_path) && (
-                    <CheckIcon className={classes.checkIcon} />
-                  )}
-                </Card>
+    <>
+      <Container className={classes.root}>
+        <Paper elevation={3} className={classes.paper}>
+          <Typography variant="h4" gutterBottom className={classes.title}>
+            Posters for {movieName} ({movieYear})
+          </Typography>
+          {loading ? (
+              <Box className={classes.loadingContainer}>
+                <CircularProgress />
+              </Box>
+          ) : (
+              <Grid container spacing={3}>
+                {posters.map((poster, index) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                      <Card
+                          className={`${classes.posterCard} ${
+                              selectedPosters.includes(poster.file_path)
+                                  ? classes.selectedPoster
+                                  : ""
+                          }`}
+                          onClick={() => handlePosterSelect(poster.file_path)}
+                      >
+                        <CardMedia
+                            className={classes.posterImage}
+                            image={`https://image.tmdb.org/t/p/w500${poster.file_path}`}
+                            title={`${movieName} poster ${index + 1}`}
+                        />
+                        {selectedPosters.includes(poster.file_path) && (
+                            <CheckIcon className={classes.checkIcon} />
+                        )}
+                      </Card>
+                    </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        )}
-      </Paper>
-    </Container>
+          )}
+        </Paper>
+      </Container>
+      <NavBar />
+    </>
   );
 };
 

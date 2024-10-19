@@ -7,7 +7,7 @@ import { store, persistor } from "./services/store";
 import PosterSelector from "./components/PosterSelector";
 import PosterGallery from "./components/PosterGallery";
 import UploadDiary from "./components/UploadDiary";
-import GlobalDownloadButton from "./components/DownloadButton";
+import Cart from "./components/Cart";
 
 function App() {
   return (
@@ -23,11 +23,11 @@ function App() {
                   path="/posters/:movieName/:movieYear"
                   element={<PosterGallery />}
                 />
+                <Route path="/Cart" element={<Cart />} />
               </Routes>
             </div>
           </Router>
         }
-        <GlobalDownloadButton />
       </PersistGate>
     </Provider>
   );

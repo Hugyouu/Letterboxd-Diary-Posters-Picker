@@ -17,10 +17,12 @@ import Pagination from "@mui/material/Pagination";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import queryString from "query-string";
 import pulpGif from "../static/images/pulp.gif";
+import NavBar from "./NavBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
   },
   paper: {
     padding: theme.spacing(3),
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     maxHeight: "800px",
-    minHeight: "1000px",
+    minHeight: "900px",
   },
   listItem: {
     marginBottom: theme.spacing(2),
@@ -93,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    height: "200px", // Adjust height as needed to keep component size consistent
+    height: "200px",
   },
   progressLabel: {
     marginTop: theme.spacing(2),
@@ -186,8 +188,9 @@ const PosterSelector = () => {
     const parsed = queryString.parse(location.search);
     const pageNumber = parsed.page ? parseInt(parsed.page, 10) : 1;
     setPage(pageNumber);
-    fetchMovies(pageNumber);
-    fetchUsername();
+
+    fetchMovies(pageNumber).then(r => console.log(r));
+    // fetchUsername();
   }, [location.search]);
 
   const fetchUsername = async () => {
@@ -231,7 +234,7 @@ const PosterSelector = () => {
     navigate(
       `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(
         movieYear
-      )}?page=${page}`
+      )}`
     );
   };
 
@@ -263,131 +266,127 @@ const PosterSelector = () => {
   };
 
   return (
-    <Container className={classes.root}>
-      <Paper elevation={3} className={classes.paper}>
-        <Typography variant="h4" gutterBottom className={classes.title}>
-          Your diary
-        </Typography>
-        {username && (
-          <Typography variant="h6" className={classes.username}>
-            Letterboxd User: {username}
+    <>
+      <Container className={classes.root}>
+        <Paper elevation={3} className={classes.paper}>
+          <Typography variant="h4" gutterBottom className={classes.title}>
+            Your diary
           </Typography>
-        )}
-        {loading ? (
-          <Box className={classes.progressContainer}>
-            <LinearProgress variant="determinate" value={progress} />
-            <Typography className={classes.progressLabel}>
-              Downloading movies...
-            </Typography>
-          </Box>
-        ) : movies.length > 0 ? (
-          <>
-            <List className={classes.list}>
-              {movies.map((movie, index) => (
-                <ListItem
-                  button
-                  key={index}
-                  onClick={() => handleMovieClick(movie.Name, movie.Year)}
-                  className={classes.listItem}
+          {username && (
+              <Typography variant="h6" className={classes.username}>
+                Letterboxd User: {username}
+              </Typography>
+          )}
+          {loading ? (
+              <Box className={classes.progressContainer}>
+                <LinearProgress variant="determinate" value={progress} />
+                <Typography className={classes.progressLabel}>
+                  Downloading movies...
+                </Typography>
+              </Box>
+          ) : movies.length > 0 ? (
+              <>
+                <List className={classes.list}>
+                  {movies.map((movie, index) => (
+                      <ListItem
+                          button
+                          key={index}
+                          onClick={() => handleMovieClick(movie.Name, movie.Year)}
+                          className={classes.listItem}
+                      >
+                        <Grid container alignItems="center">
+                          <Grid item>
+                            <img
+                                src={
+                                    `https://image.tmdb.org/t/p/w500${movie.Poster.file_path}` ||
+                                    `/api/placeholder/50/75`
+                                }
+                                alt={movie.Name}
+                                className={classes.poster}
+                            />
+                          </Grid>
+                          <Grid item className={classes.movieInfo}>
+                            <Typography
+                                variant="subtitle1"
+                                className={classes.movieTitle}
+                            >
+                              {movie.Name}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                className={classes.movieYear}
+                            >
+                              {movie.Year}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Box className={classes.watchedDate}>
+                              {(() => {
+                                const { day, month } = formatWatchedDate(
+                                    movie["Watched Date"]
+                                );
+                                return (
+                                    <>
+                                      <Typography
+                                          variant="body2"
+                                          className={classes.watchedDay}
+                                      >
+                                        {day}
+                                      </Typography>
+                                      <Typography
+                                          variant="body2"
+                                          className={classes.watchedMonth}
+                                      >
+                                        {month}
+                                      </Typography>
+                                    </>
+                                );
+                              })()}
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                  ))}
+                </List>
+                <Box className={classes.paginationContainer}>
+                  <ThemeProvider theme={paginationTheme}>
+                    <Pagination
+                        count={totalPages}
+                        page={page}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                  </ThemeProvider>
+                </Box>
+              </>
+          ) : (
+              <Box className={classes.noMoviesContainer}>
+                <div className={classes.gifContainer}>
+                  <div className={classes.circleBackground}></div>
+                  <img
+                      src={pulpGif}
+                      alt="Confused reaction"
+                      className={classes.gif}
+                  />
+                </div>
+                <Typography variant="body1" gutterBottom>
+                  No movies found in your diary. Please check your Letterboxd
+                  username or CSV file.
+                </Typography>
+                <Button
+                    variant="contained"
+                    className={classes.backButton}
+                    onClick={handleGoBack}
                 >
-                  <Grid container alignItems="center">
-                    <Grid item>
-                      <img
-                        src={
-                          `https://image.tmdb.org/t/p/w500${movie.Poster.file_path}` ||
-                          `/api/placeholder/50/75`
-                        }
-                        alt={movie.Name}
-                        className={classes.poster}
-                      />
-                    </Grid>
-                    <Grid item className={classes.movieInfo}>
-                      <Typography
-                        variant="subtitle1"
-                        className={classes.movieTitle}
-                      >
-                        {movie.Name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        className={classes.movieYear}
-                      >
-                        {movie.Year}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Box className={classes.watchedDate}>
-                        {(() => {
-                          const { day, month } = formatWatchedDate(
-                            movie["Watched Date"]
-                          );
-                          return (
-                            <>
-                              <Typography
-                                variant="body2"
-                                className={classes.watchedDay}
-                              >
-                                {day}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                className={classes.watchedMonth}
-                              >
-                                {month}
-                              </Typography>
-                            </>
-                          );
-                        })()}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </ListItem>
-              ))}
-            </List>
-            <Box className={classes.paginationContainer}>
-              <ThemeProvider theme={paginationTheme}>
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={handlePageChange}
-                  color="primary"
-                />
-              </ThemeProvider>
-            </Box>
-            <Button
-              variant="contained"
-              className={classes.refreshButton}
-              onClick={handleRefreshFiles}
-            >
-              Refresh File
-            </Button>
-          </>
-        ) : (
-          <Box className={classes.noMoviesContainer}>
-            <div className={classes.gifContainer}>
-              <div className={classes.circleBackground}></div>
-              <img
-                src={pulpGif}
-                alt="Confused reaction"
-                className={classes.gif}
-              />
-            </div>
-            <Typography variant="body1" gutterBottom>
-              No movies found in your diary. Please check your Letterboxd
-              username or CSV file.
-            </Typography>
-            <Button
-              variant="contained"
-              className={classes.backButton}
-              onClick={handleGoBack}
-            >
-              Go Back
-            </Button>
-          </Box>
-        )}
-      </Paper>
-    </Container>
+                  Go Back
+                </Button>
+              </Box>
+          )}
+        </Paper>
+      </Container>
+      <NavBar onRefreshFiles={handleRefreshFiles} />
+    </>
   );
 };
 

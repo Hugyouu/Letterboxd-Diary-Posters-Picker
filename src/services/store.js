@@ -13,7 +13,14 @@ const posterSelectionReducer = (state = {}, action) => {
       return {
         ...state,
         [action.movieId]: state[action.movieId].filter(
-          (id) => id !== action.posterId
+            (id) => id !== action.posterId
+        ),
+      };
+    case "REMOVE_POSTER":
+      return {
+        ...state,
+        [action.movieId]: state[action.movieId].filter(
+            (id) => id !== action.posterId
         ),
       };
     default:
