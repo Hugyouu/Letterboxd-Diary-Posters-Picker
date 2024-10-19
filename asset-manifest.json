@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Letterboxd-Diary-Posters-Picker/static/css/main.d887a595.css",
+    "main.js": "/Letterboxd-Diary-Posters-Picker/static/js/main.87f3a750.js",
+    "static/js/453.d855a71b.chunk.js": "/Letterboxd-Diary-Posters-Picker/static/js/453.d855a71b.chunk.js",
+    "static/media/pulp.gif": "/Letterboxd-Diary-Posters-Picker/static/media/pulp.18631b4f3ee5e986906b.gif",
+    "index.html": "/Letterboxd-Diary-Posters-Picker/index.html",
+    "main.d887a595.css.map": "/Letterboxd-Diary-Posters-Picker/static/css/main.d887a595.css.map",
+    "main.87f3a750.js.map": "/Letterboxd-Diary-Posters-Picker/static/js/main.87f3a750.js.map",
+    "453.d855a71b.chunk.js.map": "/Letterboxd-Diary-Posters-Picker/static/js/453.d855a71b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d887a595.css",
+    "static/js/main.87f3a750.js"
+  ]
+}
