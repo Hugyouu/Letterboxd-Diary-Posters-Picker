@@ -1,0 +1,192 @@
+// Variables
+$primary-color: #00a346;
+$secondary-color: #667788;
+$background-dark: #1c1f23;
+$text-white: #ffffff;
+$text-gray: #667788;
+$border-color: #667788;
+$hover-color: rgba(102, 119, 136, 0.2);
+
+.poster-selector {
+  padding: 0 2rem;
+  max-width: 100% !important; // Override MUI Container
+  margin: 2rem auto 4rem !important;
+
+  .content-paper {
+    padding: 1.5rem;
+    border-radius: 4px;
+    background-color: $background-dark !important;
+  }
+
+  .title {
+    margin-bottom: 1.5rem;
+    color: $text-white;
+  }
+
+  .username {
+    color: $primary-color;
+    margin-bottom: 1rem;
+  }
+
+  .movies-list {
+    max-height: 800px;
+    min-height: 900px;
+    padding: 0;
+  }
+
+  .movie-item {
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+
+    &:hover {
+      background-color: $hover-color;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-color;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    // Override MUI ListItem styles
+    &.MuiListItem-root {
+      padding: 0.5rem !important;
+    }
+
+    .MuiGrid-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .movie-poster {
+      width: 50px;
+      height: 75px;
+      object-fit: cover;
+      margin-right: 1rem;
+      border-radius: 4px;
+    }
+
+    .movie-info {
+      flex-grow: 1;
+      max-width: calc(100% - 110px);
+    }
+
+    .movie-title {
+      color: $text-white;
+      font-family: "TiemposTextWeb-Semibold, Georgia, serif";
+      font-size: 1.38461538rem;
+      font-weight: 400;
+      transition: color 0.3s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+
+    .movie-year {
+      color: $text-gray;
+    }
+
+    .watched-date {
+      color: $text-gray;
+    }
+
+    .watched-day {
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .watched-month {
+      font-size: 0.875rem;
+    }
+  }
+
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+
+    // Override MUI Pagination styles
+    .MuiPagination-root {
+      .MuiPaginationItem-root {
+        color: $text-white;
+
+        &.Mui-selected {
+          background-color: $secondary-color;
+        }
+      }
+    }
+  }
+
+  .progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+
+    .MuiLinearProgress-root {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .progress-label {
+    margin-top: 1rem;
+    color: $text-white;
+  }
+
+  .no-movies-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+  }
+
+  .gif-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 1rem;
+  }
+
+  .circle-background {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background-color: $text-white;
+    clip-path: inset(0 0 25% 0);
+    bottom: -28%;
+  }
+
+  .reaction-gif {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .back-button {
+    margin-top: 1rem;
+    background-color: $primary-color !important;
+    color: $text-white !important;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary-color, 10%) !important;
+    }
+  }
+}

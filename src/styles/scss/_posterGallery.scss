@@ -1,0 +1,70 @@
+// Variables
+$primary-color: #00a346;
+$background-dark: #1c1f23;
+$text-white: #ffffff;
+$hover-scale: 1.05;
+$loading-height: 50vh;
+
+.poster-gallery {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+  .content-paper {
+    padding: 1.5rem;
+    border-radius: 4px;
+    background-color: $background-dark;
+  }
+
+  .title {
+    color: $text-white;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 400;
+  }
+
+  .poster-card {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale($hover-scale);
+    }
+
+    &.selected-poster {
+      border: 4px solid $primary-color;
+      border-radius: 4px;
+    }
+
+    .poster-image {
+      padding-top: 150%;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 4px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background-color: $primary-color;
+      color: $text-white;
+      border-radius: 50%;
+      padding: 0.25rem;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: $loading-height;
+  }
+}

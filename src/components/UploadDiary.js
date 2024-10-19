@@ -7,103 +7,15 @@ import {
   Button,
   CircularProgress,
   TextField,
-  makeStyles,
 } from "@material-ui/core";
 import { CloudUploadOutlined } from "@material-ui/icons";
 import CloudDoneOutlinedIcon from "@mui/icons-material/CloudDoneOutlined";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(4),
-    backgroundColor: "#14181c",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  card: {
-    width: "100%",
-    maxWidth: "600px",
-    backgroundColor: "#1c1f23",
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[3],
-    padding: theme.spacing(4),
-  },
-  title: {
-    marginBottom: theme.spacing(3),
-    fontWeight: "bold",
-    color: "#ffffff",
-  },
-  dropzone: {
-    border: `2px dashed #00A346`,
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(4),
-    textAlign: "center",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#1f252a",
-    },
-  },
-  dropzoneIcon: {
-    marginBottom: theme.spacing(2),
-    color: "#00A346",
-  },
-  dropzoneText: {
-    marginBottom: theme.spacing(2),
-    color: "#ffffff",
-  },
-  progressContainer: {
-    marginTop: theme.spacing(2),
-  },
-  submitButton: {
-    color: "#fff",
-    fontSize: "0.8rem",
-    fontWeight: "900",
-    textTransform: "uppercase",
-    letterSpacing: "0.04em",
-    lineHeight: "2.8rem",
-    display: "inline-block",
-    cursor: "pointer",
-    padding: "0 1rem",
-    border: "0",
-    borderRadius: "4px",
-    outline: "none",
-    background: "#526e89",
-    transition: "background-color 0.3s ease",
-    "&:hover": {
-      backgroundColor: "#1caff2",
-    },
-  },
-  overviewText: {
-    color: "#456",
-    marginTop: theme.spacing(4),
-    padding: theme.spacing(3),
-  },
-  usernameField: {
-    marginBottom: theme.spacing(3),
-    "& .MuiOutlinedInput-root": {
-      color: "#ffffff",
-      "& fieldset": {
-        borderColor: "#00A346",
-      },
-      "&:hover fieldset": {
-        borderColor: "#00A346",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#1caff2",
-      },
-    },
-    "& .MuiInputLabel-root": {
-      color: "#ffffff",
-    },
-  },
-}));
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const UploadDiary = () => {
-  const classes = useStyles();
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [username, setUsername] = useState("");
@@ -112,7 +24,7 @@ const UploadDiary = () => {
   useEffect(() => {
     const checkCSVFile = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/check-csv");
+        const response = await axios.get(`${apiUrl}/api/check-csv`);
         if (response.data.fileExists) {
           navigate("/PosterSelector");
         }
@@ -136,16 +48,14 @@ const UploadDiary = () => {
       setUploading(true);
       try {
         if (username) {
-          // Here you would implement the logic to fetch the diary from Letterboxd
-          // For now, we'll just simulate a successful fetch
           console.log(`Fetching diary for user: ${username}`);
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+          await new Promise((resolve) => setTimeout(resolve, 1000));
           navigate("/PosterSelector");
         } else if (file) {
           const formData = new FormData();
           formData.append("file", file);
 
-          await axios.post("http://localhost:5000/api/upload-csv", formData, {
+          await axios.post(`${apiUrl}/api/upload-csv`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -162,13 +72,13 @@ const UploadDiary = () => {
   };
 
   return (
-    <Container className={classes.root}>
-      <div className={classes.card}>
-        <Typography variant="h4" className={classes.title}>
+    <Container className="upload-diary">
+      <div className="upload-card">
+        <Typography variant="h4" className="title">
           Upload Letterboxd Diary
         </Typography>
         <TextField
-          className={classes.usernameField}
+          className="username-field"
           label="Letterboxd Username"
           variant="outlined"
           fullWidth
@@ -176,42 +86,33 @@ const UploadDiary = () => {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter your Letterboxd username"
         />
-        <Typography
-          variant="body2"
-          style={{ color: "#ffffff", marginBottom: "1rem" }}
-        >
+        <Typography variant="body2" className="or-text">
           Or upload a CSV file:
         </Typography>
-        <div {...getRootProps()} className={classes.dropzone}>
+        <div {...getRootProps()} className="dropzone">
           <input {...getInputProps()} />
           {file ? (
             <>
-              <CloudDoneOutlinedIcon
-                className={classes.dropzoneIcon}
-                style={{ fontSize: "4rem" }}
-              />
-              <Typography variant="h6" className={classes.dropzoneText}>
+              <CloudDoneOutlinedIcon className="dropzone-icon" />
+              <Typography variant="h6" className="dropzone-text">
                 Your file has been uploaded: {file.name}
               </Typography>
             </>
           ) : (
             <>
-              <CloudUploadOutlined
-                className={classes.dropzoneIcon}
-                style={{ fontSize: "4rem" }}
-              />
-              <Typography variant="h6" className={classes.dropzoneText}>
+              <CloudUploadOutlined className="dropzone-icon" />
+              <Typography variant="h6" className="dropzone-text">
                 Drag and drop a CSV file here or click to select
               </Typography>
             </>
           )}
         </div>
-        <Grid container justify="center" className={classes.progressContainer}>
+        <Grid container justify="center" className="progress-container">
           {uploading ? (
             <CircularProgress />
           ) : (
             <Button
-              className={classes.submitButton}
+              className="submit-button"
               variant="contained"
               onClick={handleUpload}
               disabled={!username && !file}
@@ -221,7 +122,7 @@ const UploadDiary = () => {
           )}
         </Grid>
       </div>
-      <Typography variant="body1" className={classes.overviewText}>
+      <Typography variant="body1" className="overview-text">
         This tool allows you to easily import your Letterboxd diary and select
         your favorite movie poster. Follow these simple steps:
         <br />
