@@ -11,7 +11,6 @@ import {
   CardMedia,
   CircularProgress,
   Box,
-  makeStyles,
   Paper,
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
@@ -19,66 +18,7 @@ import NavBar from "./NavBar";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(3),
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: "#1c1f23",
-  },
-  title: {
-    color: "white",
-    marginBottom: theme.spacing(3),
-    fontSize: "2rem",
-    fontWeight: "400",
-  },
-  posterCard: {
-    position: "relative",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "transparent",
-    boxShadow: "none",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    "&:hover": {
-      transform: "scale(1.05)",
-    },
-  },
-  selectedPoster: {
-    border: `4px solid ${theme.palette.primary.main}`,
-    borderRadius: theme.shape.borderRadius,
-  },
-  checkIcon: {
-    position: "absolute",
-    top: theme.spacing(1),
-    right: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    borderRadius: "50%",
-    padding: theme.spacing(0.5),
-  },
-  posterImage: {
-    paddingTop: "150%",
-    backgroundSize: "contain",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    borderRadius: theme.shape.borderRadius,
-    transition: "transform 0.3s ease-in-out",
-  },
-  loadingContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "50vh",
-  },
-}));
-
 const PosterGallery = ({ movieId }) => {
-  const classes = useStyles();
   const [posters, setPosters] = useState([]);
   const [loading, setLoading] = useState(true);
   const { movieName, movieYear } = useParams();

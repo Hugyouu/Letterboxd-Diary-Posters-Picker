@@ -16,7 +16,6 @@ import {
   DialogActions,
   Paper,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import ShareIcon from "@material-ui/icons/Share";
@@ -24,64 +23,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { removePoster } from "../services/action";
 import axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(8),
-    display: "flex",
-  },
-  posterList: {
-    flex: 2,
-    marginRight: theme.spacing(2),
-    maxHeight: "calc(100vh - 200px)",
-    overflowY: "auto",
-  },
-  actionPanel: {
-    flex: 1,
-    position: "sticky",
-    top: theme.spacing(4),
-    height: "fit-content",
-  },
-  card: {
-    display: "flex",
-    marginBottom: theme.spacing(2),
-    backgroundColor: "#2c3e50",
-  },
-  cardMedia: {
-    width: 100,
-  },
-  cardContent: {
-    flex: "1 0 auto",
-  },
-  actions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(2),
-  },
-  slider: {
-    width: "100%",
-    marginTop: theme.spacing(2),
-  },
-  button: {
-    width: "100%",
-  },
-  typography: {
-    color: "#ecf0f1",
-  },
-  formControl: {
-    marginBottom: theme.spacing(2),
-  },
-  checkbox: {
-    color: "#3498db",
-  },
-  paper: {
-    padding: theme.spacing(3),
-    backgroundColor: "#34495e",
-  },
-}));
-
 const Cart = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const selectedPosters = useSelector((state) => {
     const selections = state.posterSelections;
