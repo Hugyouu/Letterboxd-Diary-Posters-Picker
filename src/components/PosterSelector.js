@@ -18,7 +18,7 @@ import queryString from "query-string";
 import pulpGif from "../static/images/pulp.gif";
 import NavBar from "./NavBar";
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_APIUrl;
 
 const paginationTheme = createTheme({
   palette: {
@@ -56,7 +56,7 @@ const PosterSelector = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [progress, setProgress] = useState(0);
+  //const [progress, setProgress] = useState(0);
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,29 +70,29 @@ const PosterSelector = () => {
     fetchMovies(pageNumber).then((r) => console.log(r));
   }, [location.search]);
 
-  const fetchUsername = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/username`);
-      setUsername(response.data.username);
-    } catch (error) {
-      console.error("Error fetching username:", error);
-    }
-  };
+  // const fetchUsername = async () => {
+  //   try {
+  //     const response = await axios.get(`${apiUrl}/api/username`);
+  //     setUsername(response.data.username);
+  //   } catch (error) {
+  //     console.error("Error fetching username:", error);
+  //   }
+  // };
 
   const fetchMovies = async (pageNumber) => {
     try {
       setLoading(true);
-      setProgress(0);
+      // setProgress(0);
 
       const response = await axios.get(
         `${apiUrl}/api/movies?page=${pageNumber}&limit=${moviesPerPage}`,
         {
-          onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setProgress(percentCompleted);
-          },
+          // onDownloadProgress: (progressEvent) => {
+          //   const percentCompleted = Math.round(
+          //     (progressEvent.loaded * 100) / progressEvent.total
+          //   );
+          //   setProgress(percentCompleted);
+          // },
         }
       );
 
