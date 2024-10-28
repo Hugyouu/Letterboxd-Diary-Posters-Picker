@@ -18,7 +18,7 @@ import queryString from "query-string";
 import pulpGif from "../static/images/pulp.gif";
 import NavBar from "./NavBar";
 
-const apiUrl = process.env.REACT_APP_APIUrl;
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const paginationTheme = createTheme({
   palette: {

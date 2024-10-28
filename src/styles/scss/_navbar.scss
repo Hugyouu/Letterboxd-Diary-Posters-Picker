@@ -1,0 +1,32 @@
+// _navbar.scss
+
+// Variables de couleur et autres constantes
+$background-color: #1c1f23;
+$icon-color: white;
+$margin-right: 8px; // Correspondant à theme.spacing(2)
+
+.navbar {
+  top: auto !important;
+  bottom: 0;
+  background-color: $background-color !important;
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .back-button,
+  .cart-button,
+  .refresh-button {
+    color: $icon-color;
+  }
+
+  .refresh-button {
+    margin-right: $margin-right;
+  }
+
+  .back-button[disabled] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
