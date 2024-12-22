@@ -13,6 +13,7 @@ const Cart = () => {
         posters.map((poster) => ({
           movieId,
           posterId: typeof poster === "string" ? poster : poster.posterId,
+          watchedDate: poster.watchedDate,
         }))
     );
   });

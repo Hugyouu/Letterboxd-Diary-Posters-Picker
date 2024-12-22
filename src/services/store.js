@@ -6,10 +6,10 @@ import {DESELECT_POSTER, REMOVE_ALL_POSTERS, REMOVE_POSTER, SELECT_POSTER} from 
 const posterSelectionReducer = (state = {}, action) => {
   switch (action.type) {
     case SELECT_POSTER: {
-        const { movieId, posterId } = action.payload;
+        const { movieId, posterId, watchedDate } = action.payload;
         return {
             ...state,
-            [movieId]: [...(state[movieId] || []), posterId],
+            [movieId]: [...(state[movieId] || []), { posterId, watchedDate }],
         };
     }
       case DESELECT_POSTER: {

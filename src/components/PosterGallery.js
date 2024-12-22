@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { selectPoster, deselectPoster } from "../services/action";
@@ -16,10 +16,13 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import NavBar from "./NavBar";
 import {Dialog} from "@mui/material";
+import matchers from "@testing-library/jest-dom/matchers";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const PosterGallery = () => {
+  const location = useLocation();
+  const { watchedDate } = location.state || {};
   const { movieName, movieYear } = useParams();
   const [posters, setPosters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,7 @@ const PosterGallery = () => {
     if (isPosterSelected) {
       dispatch(deselectPoster(movieName, movieYear, posterId));
     } else {
-      dispatch(selectPoster(movieName, movieYear, posterId));
+      dispatch(selectPoster(movieName, movieYear, posterId, watchedDate));
     }
   };
 

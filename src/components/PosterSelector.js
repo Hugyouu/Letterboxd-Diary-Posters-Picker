@@ -107,9 +107,10 @@ const PosterSelector = () => {
     }
   };
 
-  const handleMovieClick = (movieName, movieYear) => {
+  const handleMovieClick = (movieName, movieYear, watchedDate) => {
     navigate(
-      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(movieYear)}`
+      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(movieYear)}`,
+      {state: {watchedDate}}
     );
   };
 
@@ -168,7 +169,7 @@ const PosterSelector = () => {
                   <ListItem
                     button
                     key={index}
-                    onClick={() => handleMovieClick(movie.Name, movie.Year)}
+                    onClick={() => handleMovieClick(movie.Name, movie.Year, movie["Watched Date"])}
                     className="movie-item"
                   >
                     <Grid container alignItems="center">

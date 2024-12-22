@@ -4,11 +4,11 @@ export const REMOVE_POSTER = "REMOVE_POSTER";
 
 export const REMOVE_ALL_POSTERS = "REMOVE_ALL_POSTERS";
 
-export const selectPoster = (movieName, movieYear, posterId) => {
+export const selectPoster = (movieName, movieYear, posterId, watchedDate) => {
   const movieId = `${movieName}-${movieYear}`;
   return {
     type: SELECT_POSTER,
-    payload: { movieId, posterId },
+    payload: { movieId, posterId, watchedDate },
   };
 };
 
