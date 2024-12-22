@@ -11,18 +11,24 @@ import {
   CardMedia,
   CircularProgress,
   Box,
-  Paper,
+  Paper, DialogContent, DialogTitle, DialogActions, Button,
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import NavBar from "./NavBar";
+import {Dialog} from "@mui/material";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const PosterGallery = ({ movieId }) => {
+const PosterGallery = () => {
+  const { movieName, movieYear } = useParams();
   const [posters, setPosters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { movieName, movieYear } = useParams();
+  const [error, setError] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const dispatch = useDispatch();
+
+  const movieId = `${movieName}-${movieYear}`;
+
   const selectedPosters = useSelector(
     (state) => state.posterSelections[movieId] || []
   );
@@ -31,10 +37,20 @@ const PosterGallery = ({ movieId }) => {
     const fetchPosters = async () => {
       try {
         setLoading(true);
+        setError(null);
+
+        const encodedName = encodeURIComponent(movieName);
+        const encodedYear = encodeURIComponent(movieYear);
+
         const response = await axios.get(
-          `${apiUrl}/api/posters/${movieName}/${movieYear}`
+            `${apiUrl}/api/posters/${encodedName}/${encodedYear}`
         );
-        setPosters(response.data.posters);
+
+        if (response.data && response.data.posters) {
+          setPosters(response.data.posters);
+        } else {
+          throw new Error("No posters data in response");
+        }
       } catch (error) {
         console.error("Error fetching posters:", error);
       } finally {
@@ -42,16 +58,45 @@ const PosterGallery = ({ movieId }) => {
       }
     };
 
-    fetchPosters();
+    if (movieName && movieYear) {
+      fetchPosters();
+    }
   }, [movieName, movieYear]);
 
   const handlePosterSelect = (posterId) => {
-    if (selectedPosters.includes(posterId)) {
-      dispatch(deselectPoster(movieId, posterId));
+    const postersForCurrentMovie = selectedPosters.filter(
+        (poster) => poster.movieId !== movieId
+    );
+
+    const isPosterSelected = postersForCurrentMovie.some((poster) => poster.posterId === posterId)
+
+    if (postersForCurrentMovie.length > 0 && !isPosterSelected) {
+      setDialogOpen(true);
+      return;
+    }
+    if (isPosterSelected) {
+      dispatch(deselectPoster(movieName, movieYear, posterId));
     } else {
-      dispatch(selectPoster(movieId, posterId));
+      dispatch(selectPoster(movieName, movieYear, posterId));
     }
   };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Paper elevation={3} className="content-paper">
+          <Typography color="error" align="center">
+            {error}
+          </Typography>
+        </Paper>
+        <NavBar />
+      </Container>
+    );
+  }
 
   return (
     <>
@@ -64,7 +109,7 @@ const PosterGallery = ({ movieId }) => {
             <Box className="loading-container">
               <CircularProgress />
             </Box>
-          ) : (
+          ) : posters.length > 0 ? (
             <Grid container spacing={3}>
               {posters.map((poster, index) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -78,7 +123,7 @@ const PosterGallery = ({ movieId }) => {
                   >
                     <CardMedia
                       className="poster-image"
-                      image={`https://image.tmdb.org/t/p/w500${poster.file_path}`}
+                      image={`https://image.tmdb.org/t/p/original${poster.file_path}`}
                       title={`${movieName} poster ${index + 1}`}
                     />
                     {selectedPosters.includes(poster.file_path) && (
@@ -88,10 +133,27 @@ const PosterGallery = ({ movieId }) => {
                 </Grid>
               ))}
             </Grid>
+          ) : (
+            <Typography align="center">
+            No posters found for this movie.
+            </Typography>
           )}
         </Paper>
       </Container>
       <NavBar />
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Poster already selected</DialogTitle>
+        <DialogContent>
+          <Typography>
+            You can only select one poster per movie. Please deselect the current poster first.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

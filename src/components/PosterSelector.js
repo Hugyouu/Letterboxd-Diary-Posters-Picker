@@ -109,9 +109,7 @@ const PosterSelector = () => {
 
   const handleMovieClick = (movieName, movieYear) => {
     navigate(
-      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(
-        movieYear
-      )}`
+      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(movieYear)}`
     );
   };
 

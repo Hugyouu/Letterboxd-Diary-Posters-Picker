@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removePoster } from "../services/action";
+import {removeAllPosters, removePoster} from "../services/action";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Camera } from "lucide-react";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -11,15 +10,23 @@ const Cart = () => {
   const selectedPosters = useSelector((state) => {
     const selections = state.posterSelections;
     return Object.entries(selections).flatMap(([movieId, posters]) =>
-      posters.map((posterId) => ({ movieId, posterId }))
+        posters.map((poster) => ({
+          movieId,
+          posterId: typeof poster === "string" ? poster : poster.posterId,
+        }))
     );
   });
 
   const [downloadFormat, setDownloadFormat] = useState("zip");
 
   const handleRemovePoster = (movieId, posterId) => {
-    dispatch(removePoster(movieId, posterId));
+    if (movieId && posterId) dispatch(removePoster(movieId, posterId));
   };
+
+  const handleRemoveAllPosters = () => {
+    dispatch(removeAllPosters());
+  };
+
 
   const handleDownload = async () => {
     try {
@@ -55,72 +62,62 @@ const Cart = () => {
     }
   };
 
-  const totalSlots = 4;
-  const posterSlots = [...Array(totalSlots)].map((_, index) => {
-    if (index < selectedPosters.length) {
-      return selectedPosters[index];
-    }
-    return null;
-  });
-
   return (
-    <div className="cart-container">
-      <div className="poster-grid">
-        {posterSlots.map((poster, index) => (
-          <div
-            key={
-              poster ? `${poster.movieId}-${poster.posterId}` : `empty-${index}`
-            }
-            className="poster-card"
-          >
-            {poster ? (
-              <>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${poster.posterId}`}
-                  alt="Movie poster"
-                  className="poster-image"
-                />
-                <div className="delete-overlay">
-                  <button
-                    className="delete-button"
-                    onClick={() =>
-                      handleRemovePoster(poster.movieId, poster.posterId)
-                    }
+      <div className="cart-container">
+        <div className="poster-grid">
+          {selectedPosters.length === 0 ? (
+              <p>No posters selected</p>
+          ) : (
+              selectedPosters.map((poster) => (
+                  <div
+                      key={`${poster.movieId}-${poster.posterId}`}
+                      className="poster-card"
                   >
-                    <DeleteIcon />
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="empty-poster">
-                <Camera size={48} />
-                <p>Emplacement disponible</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+                    <img
+                        src={`https://image.tmdb.org/t/p/original${poster.posterId}`}
+                        alt="Movie poster"
+                        className="poster-image"
+                    />
+                    <div className="delete-overlay">
+                      <button
+                          className="delete-button"
+                          onClick={() => handleRemovePoster(poster.movieId, poster.posterId)}
+                      >
+                        <DeleteIcon/>
+                      </button>
+                    </div>
+                  </div>
+              ))
+          )}
+        </div>
 
-      <div className="action-panel">
-        <h2>Download Options</h2>
-        <select
-          value={downloadFormat}
-          onChange={(e) => setDownloadFormat(e.target.value)}
-          className="format-select"
-        >
-          <option value="zip">ZIP</option>
-          <option value="tar">TAR</option>
-          <option value="7z">7Z</option>
-        </select>
-        <button
-          className="download-button"
-          onClick={handleDownload}
-          disabled={selectedPosters.length === 0}
-        >
-          Download Selected
-        </button>
+        <div className="action-panel">
+          <h2>Download Options</h2>
+          <select
+              value={downloadFormat}
+              onChange={(e) => setDownloadFormat(e.target.value)}
+              className="format-select"
+          >
+            <option value="zip">ZIP</option>
+            <option value="tar">TAR</option>
+            <option value="7z">7Z</option>
+          </select>
+          <button
+              className="download-button"
+              onClick={handleDownload}
+              disabled={selectedPosters.length === 0}
+          >
+            Download Selected
+          </button>
+          <button
+              className="clear-button"
+              onClick={handleRemoveAllPosters}
+              disabled={selectedPosters.length === 0}
+          >
+            Clear All Posters
+          </button>
+        </div>
       </div>
-    </div>
   );
 };
 

@@ -1,30 +1,40 @@
 import { legacy_createStore as createStore, combineReducers } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import {DESELECT_POSTER, REMOVE_ALL_POSTERS, REMOVE_POSTER, SELECT_POSTER} from "./action";
 
 const posterSelectionReducer = (state = {}, action) => {
   switch (action.type) {
-    case "SELECT_POSTER":
-      return {
-        ...state,
-        [action.movieId]: [...(state[action.movieId] || []), action.posterId],
-      };
-    case "DESELECT_POSTER":
-      return {
-        ...state,
-        [action.movieId]: state[action.movieId].filter(
-            (id) => id !== action.posterId
-        ),
-      };
-    case "REMOVE_POSTER":
-      return {
-        ...state,
-        [action.movieId]: state[action.movieId].filter(
-            (id) => id !== action.posterId
-        ),
-      };
-    default:
-      return state;
+    case SELECT_POSTER: {
+        const { movieId, posterId } = action.payload;
+        return {
+            ...state,
+            [movieId]: [...(state[movieId] || []), posterId],
+        };
+    }
+      case DESELECT_POSTER: {
+          const { movieId, posterId } = action.payload;
+          return {
+              ...state,
+              [movieId]: state[movieId]?.filter(
+                  (id) => id !== posterId
+              ),
+          };
+      }
+      case REMOVE_POSTER: {
+            const { movieId, posterId } = action;
+            return {
+                ...state,
+                [movieId]: state[movieId]?.filter(
+                    (id) => id !== posterId
+                ),
+            };
+      }
+      case REMOVE_ALL_POSTERS: {
+          return {};
+      }
+      default:
+          return state;
   }
 };
 
