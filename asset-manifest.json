@@ -1,17 +1,16 @@
 {
   "files": {
-    "main.css": "/Letterboxd-Diary-Posters-Picker/static/css/main.07856232.css",
-    "main.js": "/Letterboxd-Diary-Posters-Picker/static/js/main.815df770.js",
+    "main.css": "/Letterboxd-Diary-Posters-Picker/static/css/main.b2166ef5.css",
+    "main.js": "/Letterboxd-Diary-Posters-Picker/static/js/main.4b7d40df.js",
     "static/js/453.d855a71b.chunk.js": "/Letterboxd-Diary-Posters-Picker/static/js/453.d855a71b.chunk.js",
     "static/media/pulp.gif": "/Letterboxd-Diary-Posters-Picker/static/media/pulp.18631b4f3ee5e986906b.gif",
-    "static/media/index.cjs": "/Letterboxd-Diary-Posters-Picker/static/media/index.1282334337c6cac7deca.cjs",
     "index.html": "/Letterboxd-Diary-Posters-Picker/index.html",
-    "main.07856232.css.map": "/Letterboxd-Diary-Posters-Picker/static/css/main.07856232.css.map",
-    "main.815df770.js.map": "/Letterboxd-Diary-Posters-Picker/static/js/main.815df770.js.map",
+    "main.b2166ef5.css.map": "/Letterboxd-Diary-Posters-Picker/static/css/main.b2166ef5.css.map",
+    "main.4b7d40df.js.map": "/Letterboxd-Diary-Posters-Picker/static/js/main.4b7d40df.js.map",
     "453.d855a71b.chunk.js.map": "/Letterboxd-Diary-Posters-Picker/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.07856232.css",
-    "static/js/main.815df770.js"
+    "static/css/main.b2166ef5.css",
+    "static/js/main.4b7d40df.js"
   ]
 }
