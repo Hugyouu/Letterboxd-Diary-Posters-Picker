@@ -24,7 +24,9 @@ const UploadDiary = () => {
   useEffect(() => {
     const checkCSVFile = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/check-csv`);
+        const response = await axios.get(`${apiUrl}/api/check-csv`, {
+          withCredentials: true,
+        });
         if (response.data.fileExists) {
           navigate("/PosterSelector");
         }
@@ -49,16 +51,26 @@ const UploadDiary = () => {
       try {
         if (username) {
           console.log(`Fetching diary for user: ${username}`);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          navigate("/PosterSelector");
+          // Call backend to fetch diary from username
+          const response = await axios.post(
+            `${apiUrl}/api/fetch-diary`,
+            { username },
+            { withCredentials: true }
+          );
+
+          if (response.data && response.data.success) {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            navigate("/PosterSelector");
+          } else {
+            console.error("Failed to fetch diary", response.data);
+          }
         } else if (file) {
           const formData = new FormData();
           formData.append("file", file);
 
           await axios.post(`${apiUrl}/api/upload-csv`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
           });
 
           navigate("/PosterSelector");
@@ -84,6 +96,9 @@ const UploadDiary = () => {
           fullWidth
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") handleUpload();
+          }}
           placeholder="Enter your Letterboxd username"
         />
         <Typography variant="body2" className="or-text">

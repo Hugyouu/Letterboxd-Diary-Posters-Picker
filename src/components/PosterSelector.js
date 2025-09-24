@@ -67,7 +67,7 @@ const PosterSelector = () => {
     const pageNumber = parsed.page ? parseInt(parsed.page, 10) : 1;
     setPage(pageNumber);
 
-    fetchMovies(pageNumber).then((r) => console.log(r));
+    fetchMovies(pageNumber);
   }, [location.search]);
 
   // const fetchUsername = async () => {
@@ -86,14 +86,7 @@ const PosterSelector = () => {
 
       const response = await axios.get(
         `${apiUrl}/api/movies?page=${pageNumber}&limit=${moviesPerPage}`,
-        {
-          // onDownloadProgress: (progressEvent) => {
-          //   const percentCompleted = Math.round(
-          //     (progressEvent.loaded * 100) / progressEvent.total
-          //   );
-          //   setProgress(percentCompleted);
-          // },
-        }
+        { withCredentials: true }
       );
 
       if (response.data.movies) {
@@ -109,18 +102,11 @@ const PosterSelector = () => {
 
   const handleMovieClick = (movieName, movieYear, watchedDate) => {
     navigate(
-      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(movieYear)}`,
-      {state: {watchedDate}}
+      `/posters/${encodeURIComponent(movieName)}/${encodeURIComponent(
+        movieYear
+      )}`,
+      { state: { watchedDate } }
     );
-  };
-
-  const handleRefreshFiles = async () => {
-    try {
-      await axios.delete(`${apiUrl}/api/delete-csv`);
-      navigate("/");
-    } catch (error) {
-      console.error("Error deleting CSV file:", error);
-    }
   };
 
   const handlePageChange = (event, value) => {
@@ -169,14 +155,20 @@ const PosterSelector = () => {
                   <ListItem
                     button
                     key={index}
-                    onClick={() => handleMovieClick(movie.Name, movie.Year, movie["Watched Date"])}
+                    onClick={() =>
+                      handleMovieClick(
+                        movie.Name,
+                        movie.Year,
+                        movie["Watched Date"]
+                      )
+                    }
                     className="movie-item"
                   >
                     <Grid container alignItems="center">
                       <Grid item>
                         <img
                           src={
-                            `https://image.tmdb.org/t/p/w500${movie.Poster.file_path}` ||
+                            `https://image.tmdb.org/t/p/w500${movie.Poster}` ||
                             `/api/placeholder/50/75`
                           }
                           alt={movie.Name}
@@ -256,7 +248,7 @@ const PosterSelector = () => {
           )}
         </Paper>
       </Container>
-      <NavBar onRefreshFiles={handleRefreshFiles} />
+      <NavBar />
     </>
   );
 };

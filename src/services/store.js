@@ -17,7 +17,7 @@ const posterSelectionReducer = (state = {}, action) => {
           return {
               ...state,
               [movieId]: state[movieId]?.filter(
-                  (id) => id !== posterId
+                  (poster) => poster.posterId !== posterId
               ),
           };
       }
@@ -26,7 +26,7 @@ const posterSelectionReducer = (state = {}, action) => {
             return {
                 ...state,
                 [movieId]: state[movieId]?.filter(
-                    (id) => id !== posterId
+                    (poster) => poster.posterId !== posterId
                 ),
             };
       }

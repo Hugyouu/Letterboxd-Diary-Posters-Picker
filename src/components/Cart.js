@@ -1,33 +1,59 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {removeAllPosters, removePoster} from "../services/action";
+import { useNavigate } from "react-router-dom";
+import { removeAllPosters, removePoster } from "../services/action";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {
+  Box,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@material-ui/core";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectedPosters = useSelector((state) => {
     const selections = state.posterSelections;
     return Object.entries(selections).flatMap(([movieId, posters]) =>
-        posters.map((poster) => ({
-          movieId,
-          posterId: typeof poster === "string" ? poster : poster.posterId,
-          watchedDate: poster.watchedDate,
-        }))
+      posters.map((poster) => ({
+        movieId,
+        posterId: typeof poster === "string" ? poster : poster.posterId,
+        watchedDate: poster.watchedDate,
+      }))
     );
   });
 
   const [downloadFormat, setDownloadFormat] = useState("zip");
 
+  // Nouvel état pour la confirmation de suppression globale
+  const [openConfirmClear, setOpenConfirmClear] = useState(false);
+
   const handleRemovePoster = (movieId, posterId) => {
     if (movieId && posterId) dispatch(removePoster(movieId, posterId));
   };
 
-  const handleRemoveAllPosters = () => {
-    dispatch(removeAllPosters());
+  // Ouvre la dialog de confirmation (appelé par le bouton "Clear All Posters")
+  const handleOpenConfirmClear = () => {
+    setOpenConfirmClear(true);
   };
 
+  // Ferme la dialog sans supprimer
+  const handleCloseConfirmClear = () => {
+    setOpenConfirmClear(false);
+  };
+
+  // Confirme et supprime tous les posters
+  const handleConfirmClearAllPosters = () => {
+    dispatch(removeAllPosters());
+    setOpenConfirmClear(false);
+  };
 
   const handleDownload = async () => {
     try {
@@ -64,61 +90,104 @@ const Cart = () => {
   };
 
   return (
-      <div className="cart-container">
-        <div className="poster-grid">
-          {selectedPosters.length === 0 ? (
-              <p>No posters selected</p>
-          ) : (
-              selectedPosters.map((poster) => (
-                  <div
-                      key={`${poster.movieId}-${poster.posterId}`}
-                      className="poster-card"
-                  >
-                    <img
-                        src={`https://image.tmdb.org/t/p/original${poster.posterId}`}
-                        alt="Movie poster"
-                        className="poster-image"
-                    />
-                    <div className="delete-overlay">
-                      <button
-                          className="delete-button"
-                          onClick={() => handleRemovePoster(poster.movieId, poster.posterId)}
-                      >
-                        <DeleteIcon/>
-                      </button>
-                    </div>
-                  </div>
-              ))
-          )}
-        </div>
-
-        <div className="action-panel">
-          <h2>Download Options</h2>
-          <select
-              value={downloadFormat}
-              onChange={(e) => setDownloadFormat(e.target.value)}
-              className="format-select"
-          >
-            <option value="zip">ZIP</option>
-            <option value="tar">TAR</option>
-            <option value="7z">7Z</option>
-          </select>
-          <button
-              className="download-button"
-              onClick={handleDownload}
-              disabled={selectedPosters.length === 0}
-          >
-            Download Selected
-          </button>
-          <button
-              className="clear-button"
-              onClick={handleRemoveAllPosters}
-              disabled={selectedPosters.length === 0}
-          >
-            Clear All Posters
-          </button>
-        </div>
+    <div className="cart-container">
+      <div className="poster-grid">
+        {selectedPosters.length === 0 ? (
+          <Box className="empty-cart-container">
+            <Typography variant="body1" gutterBottom>
+              Your poster collection is empty. Start exploring movies to add
+              some posters!
+            </Typography>
+            <Button
+              variant="contained"
+              className="back-button"
+              onClick={() => navigate("/")}
+            >
+              Browse Movies
+            </Button>
+          </Box>
+        ) : (
+          selectedPosters.map((poster) => (
+            <div
+              key={`${poster.movieId}-${poster.posterId}`}
+              className="poster-card"
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/original${poster.posterId}`}
+                alt="Movie poster"
+                className="poster-image"
+              />
+              <div className="delete-overlay">
+                <button
+                  className="delete-button"
+                  onClick={() =>
+                    handleRemovePoster(poster.movieId, poster.posterId)
+                  }
+                  aria-label="Supprimer ce poster"
+                >
+                  <DeleteIcon />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
+
+      <div className="action-panel">
+        <h2>Download Options</h2>
+        <select
+          value={downloadFormat}
+          onChange={(e) => setDownloadFormat(e.target.value)}
+          className="format-select"
+        >
+          <option value="zip">ZIP</option>
+          <option value="tar">TAR</option>
+          <option value="7z">7Z</option>
+        </select>
+        <button
+          className="download-button"
+          onClick={handleDownload}
+          disabled={selectedPosters.length === 0}
+        >
+          Download Selected
+        </button>
+        <button
+          className="clear-button"
+          onClick={handleOpenConfirmClear}
+          disabled={selectedPosters.length === 0}
+          aria-haspopup="dialog"
+        >
+          Clear All Posters
+        </button>
+      </div>
+
+      <Dialog
+        open={openConfirmClear}
+        onClose={handleCloseConfirmClear}
+        aria-labelledby="confirm-clear-title"
+        aria-describedby="confirm-clear-description"
+      >
+        <DialogTitle id="confirm-clear-title">Confirm deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-clear-description">
+            Are you sure you want to delete all the posters in your collection?
+            This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmClear} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmClearAllPosters}
+            color="secondary"
+            autoFocus
+          >
+            Delete all
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 

@@ -11,12 +11,15 @@ import {
   CardMedia,
   CircularProgress,
   Box,
-  Paper, DialogContent, DialogTitle, DialogActions, Button,
+  Paper,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button,
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import NavBar from "./NavBar";
-import {Dialog} from "@mui/material";
-import matchers from "@testing-library/jest-dom/matchers";
+import { Dialog } from "@mui/material";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -46,7 +49,7 @@ const PosterGallery = () => {
         const encodedYear = encodeURIComponent(movieYear);
 
         const response = await axios.get(
-            `${apiUrl}/api/posters/${encodedName}/${encodedYear}`
+          `${apiUrl}/api/posters/${encodedName}/${encodedYear}`
         );
 
         if (response.data && response.data.posters) {
@@ -66,18 +69,18 @@ const PosterGallery = () => {
     }
   }, [movieName, movieYear]);
 
+  const isPosterSelected = (posterId) => {
+    return selectedPosters.some((poster) => poster.posterId === posterId);
+  };
+
   const handlePosterSelect = (posterId) => {
-    const postersForCurrentMovie = selectedPosters.filter(
-        (poster) => poster.movieId !== movieId
-    );
+    const isSelected = isPosterSelected(posterId);
 
-    const isPosterSelected = postersForCurrentMovie.some((poster) => poster.posterId === posterId)
-
-    if (postersForCurrentMovie.length > 0 && !isPosterSelected) {
+    if (selectedPosters.length > 0 && !isSelected) {
       setDialogOpen(true);
       return;
     }
-    if (isPosterSelected) {
+    if (isSelected) {
       dispatch(deselectPoster(movieName, movieYear, posterId));
     } else {
       dispatch(selectPoster(movieName, movieYear, posterId, watchedDate));
@@ -86,7 +89,7 @@ const PosterGallery = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-  }
+  };
 
   if (error) {
     return (
@@ -114,31 +117,30 @@ const PosterGallery = () => {
             </Box>
           ) : posters.length > 0 ? (
             <Grid container spacing={3}>
-              {posters.map((poster, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                  <Card
-                    className={`poster-card ${
-                      selectedPosters.includes(poster.file_path)
-                        ? "selected-poster"
-                        : ""
-                    }`}
-                    onClick={() => handlePosterSelect(poster.file_path)}
-                  >
-                    <CardMedia
-                      className="poster-image"
-                      image={`https://image.tmdb.org/t/p/original${poster.file_path}`}
-                      title={`${movieName} poster ${index + 1}`}
-                    />
-                    {selectedPosters.includes(poster.file_path) && (
-                      <CheckIcon className="check-icon" />
-                    )}
-                  </Card>
-                </Grid>
-              ))}
+              {posters.map((poster, index) => {
+                const isSelected = isPosterSelected(poster.file_path);
+                return (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <Card
+                      className={`poster-card ${
+                        isSelected ? "selected-poster" : ""
+                      }`}
+                      onClick={() => handlePosterSelect(poster.file_path)}
+                    >
+                      <CardMedia
+                        className="poster-image"
+                        image={`https://image.tmdb.org/t/p/original${poster.file_path}`}
+                        title={`${movieName} poster ${index + 1}`}
+                      />
+                      {isSelected && <CheckIcon className="check-icon" />}
+                    </Card>
+                  </Grid>
+                );
+              })}
             </Grid>
           ) : (
             <Typography align="center">
-            No posters found for this movie.
+              No posters found for this movie.
             </Typography>
           )}
         </Paper>
@@ -148,7 +150,8 @@ const PosterGallery = () => {
         <DialogTitle>Poster already selected</DialogTitle>
         <DialogContent>
           <Typography>
-            You can only select one poster per movie. Please deselect the current poster first.
+            You can only select one poster per movie. Please deselect the
+            current poster first.
           </Typography>
         </DialogContent>
         <DialogActions>
