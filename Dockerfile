@@ -5,12 +5,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --legacy-peer-deps
+ENV NODE_OPTIONS="--max-old-space-size=512"
+RUN npm ci --silent --legacy-peer-deps
 
 COPY . .
 ARG REACT_APP_API_URL=""
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
-RUN npm run build
 
 # nginx pour servir les fichiers statiques
 FROM nginx:stable-alpine AS runner
