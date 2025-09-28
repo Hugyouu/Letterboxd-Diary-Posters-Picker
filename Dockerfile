@@ -10,7 +10,9 @@ RUN npm ci --silent --legacy-peer-deps
 
 COPY . .
 ARG REACT_APP_API_URL=""
+ARG PUBLIC_URL=/
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+ENV PUBLIC_URL=${PUBLIC_URL}
 
 RUN npm run build
 
