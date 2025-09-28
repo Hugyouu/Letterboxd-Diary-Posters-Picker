@@ -22,10 +22,7 @@ FROM nginx:stable-alpine AS runner
 # Copy build output
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Optionnel : config nginx simple (si tu veux un fallback pour SPA)
-# Crée un fichier nginx.conf local et COPY-le ici si tu veux une config spécifique.
-# Exemple basique pour SPA (fallback to index.html)
-# COPY nginx-spa.conf /etc/nginx/conf.d/nginx-spa.conf
+COPY nginx-spa.conf /etc/nginx/conf.d/nginx-spa.conf
 
 # Expose port 80 (Caddy fera reverse proxy)
 EXPOSE 80
