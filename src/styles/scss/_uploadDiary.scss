@@ -1,7 +1,7 @@
 .upload-diary {
   padding: 3rem;
   background-color: #14181c;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   display: flex !important;
   flex-direction: column;
   align-items: center;
@@ -14,6 +14,23 @@
     border-radius: 4px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     padding: 2rem;
+    padding-top: 4rem;
+    position: relative;
+
+    .logo-container {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translate(-50%);
+      z-index: 10;
+
+      .logo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
 
     .title {
       margin-bottom: 1.5rem;
@@ -108,5 +125,24 @@
     color: #456;
     margin-top: 2rem;
     padding: 1.5rem;
+  }
+}
+
+.footer {
+  padding: 20px;
+  text-align: center;
+  color: #526e89;
+
+  .footer-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .link {
+      text-decoration: none;
+      color: inherit
+    }
   }
 }

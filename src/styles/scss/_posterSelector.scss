@@ -8,9 +8,8 @@ $border-color: #667788;
 $hover-color: rgba(102, 119, 136, 0.2);
 
 .poster-selector {
-  padding: 0 2rem;
-  max-width: 100% !important; // Override MUI Container
-  margin: 2rem auto 4rem !important;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 
   .content-paper {
     padding: 1.5rem;
