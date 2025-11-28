@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { removeAllPosters, removePoster } from "../services/action";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
+  Container,
   Box,
   Typography,
   Button,
@@ -90,7 +91,9 @@ const Cart = () => {
   };
 
   return (
-    <div className="cart-container">
+    <>
+      <Container>
+      <div className="cart-container">
       <div className="poster-grid">
         {selectedPosters.length === 0 ? (
           <Box className="empty-cart-container">
@@ -107,29 +110,34 @@ const Cart = () => {
             </Button>
           </Box>
         ) : (
-          selectedPosters.map((poster) => (
-            <div
-              key={`${poster.movieId}-${poster.posterId}`}
-              className="poster-card"
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/original${poster.posterId}`}
-                alt="Movie poster"
-                className="poster-image"
-              />
-              <div className="delete-overlay">
-                <button
-                  className="delete-button"
-                  onClick={() =>
-                    handleRemovePoster(poster.movieId, poster.posterId)
-                  }
-                  aria-label="Supprimer ce poster"
-                >
-                  <DeleteIcon />
-                </button>
+          <>
+            {selectedPosters.map((poster) => (
+              <div
+                key={`${poster.movieId}-${poster.posterId}`}
+                className="poster-card"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/original${poster.posterId}`}
+                  alt="Movie poster"
+                  className="poster-image"
+                />
+                <div className="delete-overlay">
+                  <button
+                    className="delete-button"
+                    onClick={() =>
+                      handleRemovePoster(poster.movieId, poster.posterId)
+                    }
+                    aria-label="Supprimer ce poster"
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
               </div>
+            ))}
+            <div className="poster-card add-new" onClick={() => navigate("/")}>
+              <span className="add-symbol">+</span>
             </div>
-          ))
+          </>
         )}
       </div>
 
@@ -188,6 +196,8 @@ const Cart = () => {
         </DialogActions>
       </Dialog>
     </div>
+      </Container>
+    </>
   );
 };
 
